@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import CashIcon from "./icons/CashIcon";
 import { formatCash } from "../utils/utils";
 import { useAnimation } from "../contexts/AnimationContext";
+import CounterUp from "./CounterUp";
 
 interface CashDisplayProps {
   cash: number;
@@ -26,17 +27,16 @@ const CashDisplay = ({ cash, cashIconRef }: CashDisplayProps) => {
       >
         <CashIcon />
       </motion.div>
-      <motion.div
-        className={`font-inter text-md font-extrabold ml-2 transition-all ${
-          isAnimating ? "text-green-300" : "text-white"
-        }`}
-        key={cash}
-        initial={{ scale: 1.2, opacity: 0.8 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-      >
-        {formatCash(cash)}
-      </motion.div>
+      <div className="ml-2">
+        <CounterUp
+          value={cash}
+          duration={0.8}
+          className={`font-inter text-md font-extrabold transition-all ${
+            isAnimating ? "text-green-300" : "text-white"
+          }`}
+          formatFunction={formatCash}
+        />
+      </div>
     </div>
   );
 };
