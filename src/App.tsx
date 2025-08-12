@@ -81,6 +81,8 @@ function App() {
           disabled={flippedCards.length === 0}
         />
         <MainPanel />
+
+        {/* modals */}
         <ClaimModal
           isOpen={isClaimModalOpen}
           onClose={handleCloseClaimModal}
