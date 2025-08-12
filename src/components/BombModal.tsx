@@ -33,11 +33,6 @@ const BombModal = ({
     }
   }, [isOpen]);
 
-  const handleSaveResources = () => {
-    setShowModal(false);
-    onClose();
-  };
-
   const handleLoseResources = () => {
     setShowModal(false);
     onClose();

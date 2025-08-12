@@ -8,6 +8,7 @@ import ResourcesIcon from "./ResourcesIcon";
 import MaterialsIcon from "./MaterialsIcon";
 import GoodsIcon from "./GoodsIcon";
 import StockIcon from "./StockIcon";
+import X2CardIcon from "./X2CardIcon";
 
 export {
   CashIcon,
@@ -20,4 +21,5 @@ export {
   MaterialsIcon,
   GoodsIcon,
   StockIcon,
+  X2CardIcon,
 };

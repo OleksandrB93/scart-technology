@@ -49,7 +49,6 @@ const Card = ({
           // Zero doesn't change cash
           break;
         case "Multiplier":
-          // Multiplier doubles current cash
           setCash((prevCash) => prevCash * 2);
           break;
         default:
@@ -263,7 +262,7 @@ const Card = ({
 
             {/* Content */}
             <div className="relative z-10 flex flex-col items-center justify-center">
-              {cardData.amount && (
+              {/* {cardData.amount && (
                 <motion.span
                   className="text-white font-extrabold text-lg font-inter drop-shadow-lg"
                   initial={{ y: 20, opacity: 0 }}
@@ -279,9 +278,10 @@ const Card = ({
                 >
                   {cardData.amount}
                 </motion.span>
-              )}
-              <motion.span
-                className="text-white/90 font-medium text-xs font-inter mt-1 drop-shadow-lg"
+              )} */}
+              <cardData.icon width={65} height={65} />
+             {cardData.amount && <motion.span
+                className="text-white/90 font-bold text-xs font-inter mt-1 drop-shadow-lg"
                 initial={{ y: 10, opacity: 0 }}
                 animate={{
                   y: 0,
@@ -294,7 +294,7 @@ const Card = ({
                 }}
               >
                 {cardData.title}
-              </motion.span>
+              </motion.span>}
             </div>
           </motion.div>
         )}
