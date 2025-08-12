@@ -10,7 +10,7 @@ interface CashDisplayProps {
 }
 
 const CashDisplay = ({ cash, cashIconRef }: CashDisplayProps) => {
-  const { isAnimating } = useAnimation();
+  const { isAnimating, setReady } = useAnimation();
 
   return (
     <div className="flex items-center justify-center mb-10">
@@ -23,6 +23,10 @@ const CashDisplay = ({ cash, cashIconRef }: CashDisplayProps) => {
         transition={{
           duration: 0.5,
           delay: 1.5,
+        }}
+        onAnimationComplete={() => {
+          // Позначаємо що cash icon готовий після анімації
+          setReady(true);
         }}
       >
         <CashIcon />

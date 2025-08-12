@@ -32,7 +32,7 @@ const Card = ({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const cardRef = useRef<HTMLLIElement>(null);
-  const { startIconAnimation } = useAnimation();
+  const { startIconAnimation, setReady } = useAnimation();
 
   // Get card effects based on type and flip state
   const cardEffects = useCardEffects(cardData.title, isFlipped);
@@ -40,10 +40,18 @@ const Card = ({
   // Need to check if the image is loaded
   useEffect(() => {
     const img = new Image();
-    img.onload = () => setImageLoaded(true);
-    img.onerror = () => setImageError(true);
+    img.onload = () => {
+      setImageLoaded(true);
+      // Позначаємо що картка готова
+      setReady(true);
+    };
+    img.onerror = () => {
+      setImageError(true);
+      // Навіть при помилці позначаємо як готову
+      setReady(true);
+    };
     img.src = cardData.bg;
-  }, [cardData.bg]);
+  }, [cardData.bg, setReady]);
 
   // Check if this is a cash card with CashIcon
   const isCashCard = !isSpecialCard(cardData.amount);
@@ -53,13 +61,23 @@ const Card = ({
       onFlip(id);
 
       if (isCashCard && cardRef.current) {
-        const cardRect = cardRef.current.getBoundingClientRect();
+        // Додаємо невелику затримку для стабільної роботи на деплої
+        setTimeout(() => {
+          const cardRect = cardRef.current?.getBoundingClientRect();
 
-        // Calculate amount for animation using utility function
-        const amount = parseCardAmount(cardData.amount);
+          if (cardRect) {
+            // Calculate amount for animation using utility function
+            const amount = parseCardAmount(cardData.amount);
 
-        // Start icon animation with amount using card position
-        startIconAnimation(id, cardRect, new DOMRect(0, 0, 100, 100), amount);
+            // Start icon animation with amount using card position
+            startIconAnimation(
+              id,
+              cardRect,
+              new DOMRect(0, 0, 100, 100),
+              amount
+            );
+          }
+        }, 100);
       }
 
       // Handle different card types based on amount field

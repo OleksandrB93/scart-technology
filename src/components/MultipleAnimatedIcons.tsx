@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useAnimation } from "../contexts/AnimationContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import CashIcon from "./icons/CashIcon";
 
 interface MultipleAnimatedIconsProps {
@@ -16,43 +16,63 @@ const MultipleAnimatedIcons = ({
   cardRef,
   targetRef,
 }: MultipleAnimatedIconsProps) => {
-  const { isAnimating, animatedCardId, animationAmount } = useAnimation();
+  const { isAnimating, animatedCardId, animationAmount, isReady } =
+    useAnimation();
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
   const [endPosition, setEndPosition] = useState({ x: 0, y: 0 });
   const [iconCount, setIconCount] = useState(0);
+  const [shouldRender, setShouldRender] = useState(false);
+  const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (
       isAnimating &&
       animatedCardId === cardId &&
       cardRef.current &&
-      targetRef.current
+      targetRef.current &&
+      isReady
     ) {
-      const cardRect = cardRef.current.getBoundingClientRect();
-      const targetRect = targetRef.current.getBoundingClientRect();
+      // Додаємо невелику затримку для стабільної роботи на деплої
+      timeoutRef.current = setTimeout(() => {
+        const cardRect = cardRef.current?.getBoundingClientRect();
+        const targetRect = targetRef.current?.getBoundingClientRect();
 
-      // Calculate icon position within the card (slightly above center)
-      const startPos = {
-        x: cardRect.left + cardRect.width / 2 - 20,
-        y: cardRect.top + cardRect.height / 2 - 20,
-      };
+        if (!cardRect || !targetRect) {
+          return;
+        }
 
-      const endPos = {
-        x: targetRect.left + targetRect.width / 2 - 20,
-        y: targetRect.top + targetRect.height / 2 - 20,
-      };
+        // Calculate icon position within the card (slightly above center)
+        const startPos = {
+          x: cardRect.left + cardRect.width / 2 - 20,
+          y: cardRect.top + cardRect.height / 2 - 20,
+        };
 
-      setStartPosition(startPos);
-      setEndPosition(endPos);
+        const endPos = {
+          x: targetRect.left + targetRect.width / 2 - 20,
+          y: targetRect.top + targetRect.height / 2 - 20,
+        };
 
-      // Calculate number of icons based on amount
-      const count = Math.min(
-        Math.max(Math.floor(animationAmount / 100), 5),
-        20
-      );
+        setStartPosition(startPos);
+        setEndPosition(endPos);
 
-      setIconCount(count);
+        // Calculate number of icons based on amount
+        const count = Math.min(
+          Math.max(Math.floor(animationAmount / 100), 5),
+          20
+        );
+
+        setIconCount(count);
+        setShouldRender(true);
+      }, 100);
+    } else {
+      setShouldRender(false);
     }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [
     isAnimating,
     animatedCardId,
@@ -60,13 +80,24 @@ const MultipleAnimatedIcons = ({
     cardRef,
     targetRef,
     animationAmount,
+    isReady,
   ]);
+
+  // Reset when animation stops
+  useEffect(() => {
+    if (!isAnimating) {
+      setShouldRender(false);
+      setIconCount(0);
+    }
+  }, [isAnimating]);
 
   if (
     !isVisible ||
     !isAnimating ||
     animatedCardId !== cardId ||
-    iconCount === 0
+    iconCount === 0 ||
+    !shouldRender ||
+    !isReady
   ) {
     return null;
   }
@@ -90,8 +121,8 @@ const MultipleAnimatedIcons = ({
             opacity: [0, 1, 0],
           }}
           transition={{
-            duration: 1.5,
-            delay: index * 0.08, // Faster stagger for more icons
+            duration: 1.8, // Трохи довше для стабільності
+            delay: index * 0.06, // Швидший stagger для більшої кількості іконок
             ease: "easeInOut",
             times: [0, 0.3, 1],
           }}
