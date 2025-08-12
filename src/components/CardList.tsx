@@ -9,9 +9,15 @@ interface CardListProps {
   onBombTrigger: () => void;
   gameEnded: boolean;
   onRestartGame?: () => void;
+  targetRef: React.RefObject<HTMLElement | null>;
 }
 
-const CardList = ({ setCash, onBombTrigger, gameEnded }: CardListProps) => {
+const CardList = ({
+  setCash,
+  onBombTrigger,
+  gameEnded,
+  targetRef,
+}: CardListProps) => {
   const [cards, setCards] = useState<Array<(typeof randomCardList)[0]>>([]);
   const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
 
@@ -43,8 +49,6 @@ const CardList = ({ setCash, onBombTrigger, gameEnded }: CardListProps) => {
     setFlippedCards((prev) => new Set([...prev, id]));
   };
 
-
-
   return (
     <motion.ul
       className="w-[278px] sm:w-[360px] md:w-[440px] lg:w-[520px] xl:w-[600px] 2xl:w-[680px] mx-auto mb-8 grid grid-cols-3 gap-x-2 gap-y-2"
@@ -69,6 +73,7 @@ const CardList = ({ setCash, onBombTrigger, gameEnded }: CardListProps) => {
             setCash={setCash}
             onBombTrigger={onBombTrigger}
             gameEnded={gameEnded}
+            targetRef={targetRef}
           />
         </motion.div>
       ))}

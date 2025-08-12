@@ -1,7 +1,12 @@
 import { motion } from "framer-motion";
 import CashIcon from "./icons/CashIcon";
 
-const CashDisplay = ({ cash }: { cash: number }) => {
+interface CashDisplayProps {
+  cash: number;
+  cashIconRef: React.RefObject<HTMLDivElement | null>;
+}
+
+const CashDisplay = ({ cash, cashIconRef }: CashDisplayProps) => {
   // Format large numbers for better readability
   const formatCash = (amount: number): string => {
     if (amount >= 1000000000) {
@@ -19,7 +24,19 @@ const CashDisplay = ({ cash }: { cash: number }) => {
 
   return (
     <div className="flex items-center justify-center mb-10">
-      <CashIcon />
+      <motion.div
+        ref={cashIconRef}
+        data-cash-icon
+        animate={{
+          scale: [1, 1.5, 1],
+        }}
+        transition={{
+          duration: 0.5,
+          delay: 1.5, // Delay until most icons have arrived
+        }}
+      >
+        <CashIcon />
+      </motion.div>
       <motion.div
         className="font-inter text-md font-extrabold text-white ml-2"
         key={cash}

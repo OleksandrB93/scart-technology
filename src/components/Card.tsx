@@ -1,7 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { randomCardList } from "../configs/random-card";
 import { useCardEffects } from "../hooks/useCardEffects";
+import { useAnimation } from "../contexts/AnimationContext";
+import MultipleAnimatedIcons from "./MultipleAnimatedIcons";
 
 interface CardProps {
   id: number;
@@ -11,6 +13,7 @@ interface CardProps {
   setCash: (cash: number | ((prevCash: number) => number)) => void;
   onBombTrigger: () => void;
   gameEnded: boolean;
+  targetRef: React.RefObject<HTMLElement | null>;
 }
 
 const Card = ({
@@ -21,9 +24,12 @@ const Card = ({
   setCash,
   onBombTrigger,
   gameEnded,
+  targetRef,
 }: CardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const cardRef = useRef<HTMLLIElement>(null);
+  const { startIconAnimation } = useAnimation();
 
   // Get card effects based on type and flip state
   const cardEffects = useCardEffects(cardData.title, isFlipped);
@@ -36,9 +42,39 @@ const Card = ({
     img.src = cardData.bg;
   }, [cardData.bg]);
 
+  // Check if this is a cash card with CashIcon
+  const isCashCard =
+    cardData.title !== "Bomb" &&
+    cardData.title !== "Stop" &&
+    cardData.title !== "Zero" &&
+    cardData.title !== "";
+
   const handleClick = () => {
     if (!isFlipped && !gameEnded) {
       onFlip(id);
+
+      if (isCashCard && cardRef.current) {
+        const cardRect = cardRef.current.getBoundingClientRect();
+
+        // Calculate amount for animation
+        const amount = Number(
+          cardData.amount.replace(/[KMB]/g, (match) => {
+            switch (match) {
+              case "K":
+                return "000";
+              case "M":
+                return "000000";
+              case "B":
+                return "000000000";
+              default:
+                return "";
+            }
+          })
+        );
+
+        // Start icon animation with amount using card position
+        startIconAnimation(id, cardRect, new DOMRect(0, 0, 100, 100), amount);
+      }
 
       // Handle different card types
       switch (cardData.title) {
@@ -102,6 +138,8 @@ const Card = ({
 
   return (
     <motion.li
+      ref={cardRef}
+      data-card-id={id}
       className="w-[85px] h-[85px] sm:w-[113px] sm:h-[113px] mx-auto rounded-lg flex items-center justify-center border-t border-white/15 cursor-pointer relative overflow-hidden"
       onClick={handleClick}
       whileHover={{
@@ -264,24 +302,13 @@ const Card = ({
 
             {/* Content */}
             <div className="relative z-10 flex flex-col items-center justify-center">
-              {/* {cardData.amount && (
-                <motion.span
-                  className="text-white font-extrabold text-lg font-inter drop-shadow-lg"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{
-                    y: 0,
-                    opacity: 1,
-                  }}
-                  transition={{
-                    duration: 0.4,
-                    delay: 0.2,
-                    ease: "easeOut",
-                  }}
-                >
-                  {cardData.amount}
-                </motion.span>
-              )} */}
-              <cardData.icon width={65} height={65} />
+              <div
+                className={`${
+                  cardData.bg.includes("green") ? "scale-[1.25]" : ""
+                }`}
+              >
+                <cardData.icon width={65} height={65} />
+              </div>
               {cardData.amount && (
                 <motion.span
                   className="text-white/90 font-bold text-xs font-inter mt-1 drop-shadow-lg"
@@ -303,6 +330,14 @@ const Card = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Multiple Animated Icons */}
+      <MultipleAnimatedIcons
+        cardId={id}
+        isVisible={isFlipped && isCashCard}
+        cardRef={cardRef}
+        targetRef={targetRef}
+      />
     </motion.li>
   );
 };
