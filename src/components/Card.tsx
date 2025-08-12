@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { randomCardList } from "../configs/random-card";
+import { useCardEffects } from "../hooks/useCardEffects";
 
 interface CardProps {
   id: number;
@@ -23,6 +24,9 @@ const Card = ({
 }: CardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+
+  // Get card effects based on type and flip state
+  const cardEffects = useCardEffects(cardData.title, isFlipped);
 
   // Need to check if the image is loaded
   useEffect(() => {
@@ -105,11 +109,9 @@ const Card = ({
         boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
       }}
       whileTap={{ scale: 0.95 }}
-      // animate={{
-      //   boxShadow: isFlipped
-      //     ? "0 0 4px rgba(255, 215, 0, 0.6), 0 2px 5px rgba(0,0,0,0.3)"
-      //     : "0 2px 5px rgba(0,0,0,0.3)",
-      // }}
+      animate={{
+        ...cardEffects,
+      }}
       transition={{
         type: "spring",
         stiffness: 300,
@@ -280,21 +282,23 @@ const Card = ({
                 </motion.span>
               )} */}
               <cardData.icon width={65} height={65} />
-             {cardData.amount && <motion.span
-                className="text-white/90 font-bold text-xs font-inter mt-1 drop-shadow-lg"
-                initial={{ y: 10, opacity: 0 }}
-                animate={{
-                  y: 0,
-                  opacity: 1,
-                }}
-                transition={{
-                  duration: 0.4,
-                  delay: 0.3,
-                  ease: "easeOut",
-                }}
-              >
-                {cardData.title}
-              </motion.span>}
+              {cardData.amount && (
+                <motion.span
+                  className="text-white/90 font-bold text-xs font-inter mt-1 drop-shadow-lg"
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{
+                    y: 0,
+                    opacity: 1,
+                  }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.3,
+                    ease: "easeOut",
+                  }}
+                >
+                  {cardData.title}
+                </motion.span>
+              )}
             </div>
           </motion.div>
         )}
