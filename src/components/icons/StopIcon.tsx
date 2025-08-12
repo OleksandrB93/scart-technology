@@ -1,4 +1,4 @@
-const StopIcon = ({ width, height }: { width?: number; height?: number }) => {
+const StopIcon = ({ width, height, className }: { width?: number; height?: number; className?: string }) => {
   return (
     <svg
       width={width || "33"}
@@ -6,6 +6,7 @@ const StopIcon = ({ width, height }: { width?: number; height?: number }) => {
       viewBox="0 0 33 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <g clipPath="url(#clip0_1_1121)">
         <path

@@ -7,16 +7,23 @@ import { cardVariants, containerVariants } from "../configs/framer-motion";
 interface CardListProps {
   setCash: (cash: number | ((prevCash: number) => number)) => void;
   onBombTrigger: () => void;
+  onGameOver: () => void;
   gameEnded: boolean;
   onRestartGame?: () => void;
   targetRef: React.RefObject<HTMLElement | null>;
+  onFlippedCardsChange?: (
+    flippedCards: Array<{ id: number; cardData: any }>
+  ) => void;
 }
 
 const CardList = ({
   setCash,
   onBombTrigger,
+  onGameOver,
   gameEnded,
+  onRestartGame,
   targetRef,
+  onFlippedCardsChange,
 }: CardListProps) => {
   const [cards, setCards] = useState<Array<(typeof randomCardList)[0]>>([]);
   const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
@@ -49,6 +56,17 @@ const CardList = ({
     setFlippedCards((prev) => new Set([...prev, id]));
   };
 
+  // Update flipped cards data for parent component
+  useEffect(() => {
+    if (onFlippedCardsChange) {
+      const flippedCardsData = Array.from(flippedCards).map((id) => ({
+        id,
+        cardData: cards[id],
+      }));
+      onFlippedCardsChange(flippedCardsData);
+    }
+  }, [flippedCards, cards, onFlippedCardsChange]);
+
   return (
     <motion.ul
       className="w-[278px] sm:w-[360px] md:w-[440px] lg:w-[520px] xl:w-[600px] 2xl:w-[680px] mx-auto mb-8 grid grid-cols-3 gap-x-2 gap-y-2"
@@ -72,6 +90,7 @@ const CardList = ({
             onFlip={handleCardFlip}
             setCash={setCash}
             onBombTrigger={onBombTrigger}
+            onGameOver={onGameOver}
             gameEnded={gameEnded}
             targetRef={targetRef}
           />

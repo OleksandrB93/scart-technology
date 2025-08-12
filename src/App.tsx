@@ -9,12 +9,19 @@ import InfoIconsList from "./components/InfoIconsList";
 import Button from "./components/Button";
 import MainPanel from "./components/MainPanel";
 import BombModal from "./components/BombModal";
+import ClaimModal from "./components/ClaimModal";
+import GameOverModal from "./components/GameOverModal";
 import { AnimationProvider } from "./contexts/AnimationContext";
 
 function App() {
   const [cash, setCash] = useState(0);
   const [isBombModalOpen, setIsBombModalOpen] = useState(false);
+  const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
+  const [isGameOverModalOpen, setIsGameOverModalOpen] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
+  const [flippedCards, setFlippedCards] = useState<
+    Array<{ id: number; cardData: any }>
+  >([]);
   const cashIconRef = useRef<HTMLDivElement>(null);
 
   const handleBombTrigger = () => {
@@ -30,6 +37,26 @@ function App() {
     setCash(0);
     setGameEnded(false);
     setIsBombModalOpen(false);
+    setIsClaimModalOpen(false);
+    setIsGameOverModalOpen(false);
+    setFlippedCards([]);
+  };
+
+  const handleClaimClick = () => {
+    setIsClaimModalOpen(true);
+  };
+
+  const handleCloseClaimModal = () => {
+    setIsClaimModalOpen(false);
+  };
+
+  const handleGameOver = () => {
+    setIsGameOverModalOpen(true);
+    setGameEnded(true);
+  };
+
+  const handleCloseGameOverModal = () => {
+    setIsGameOverModalOpen(false);
   };
 
   return (
@@ -41,18 +68,36 @@ function App() {
         <CardList
           setCash={setCash}
           onBombTrigger={handleBombTrigger}
+          onGameOver={handleGameOver}
           gameEnded={gameEnded}
           onRestartGame={handleRestartGame}
           targetRef={cashIconRef}
+          onFlippedCardsChange={setFlippedCards}
         />
         <InfoIconsList />
-        <Button />
+        <Button
+          onClick={handleClaimClick}
+          text="Claim"
+          disabled={flippedCards.length === 0}
+        />
         <MainPanel />
         <BombModal
           isOpen={isBombModalOpen}
           onClose={handleCloseBombModal}
           onRestartGame={handleRestartGame}
           cash={cash}
+        />
+        <ClaimModal
+          isOpen={isClaimModalOpen}
+          onClose={handleCloseClaimModal}
+          flippedCards={flippedCards}
+          totalCash={cash}
+        />
+        <GameOverModal
+          isOpen={isGameOverModalOpen}
+          onClose={handleCloseGameOverModal}
+          flippedCards={flippedCards}
+          totalCash={cash}
         />
       </MainWrapper>
     </AnimationProvider>

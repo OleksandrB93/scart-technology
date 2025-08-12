@@ -4,6 +4,7 @@ import { randomCardList } from "../configs/random-card";
 import { useCardEffects } from "../hooks/useCardEffects";
 import { useAnimation } from "../contexts/AnimationContext";
 import MultipleAnimatedIcons from "./MultipleAnimatedIcons";
+import { parseCardAmount, isSpecialCard } from "../utils/utils";
 
 interface CardProps {
   id: number;
@@ -12,6 +13,7 @@ interface CardProps {
   onFlip: (id: number) => void;
   setCash: (cash: number | ((prevCash: number) => number)) => void;
   onBombTrigger: () => void;
+  onGameOver: () => void;
   gameEnded: boolean;
   targetRef: React.RefObject<HTMLElement | null>;
 }
@@ -23,6 +25,7 @@ const Card = ({
   onFlip,
   setCash,
   onBombTrigger,
+  onGameOver,
   gameEnded,
   targetRef,
 }: CardProps) => {
@@ -43,11 +46,7 @@ const Card = ({
   }, [cardData.bg]);
 
   // Check if this is a cash card with CashIcon
-  const isCashCard =
-    cardData.title !== "Bomb" &&
-    cardData.title !== "Stop" &&
-    cardData.title !== "Zero" &&
-    cardData.title !== "";
+  const isCashCard = !isSpecialCard(cardData.amount);
 
   const handleClick = () => {
     if (!isFlipped && !gameEnded) {
@@ -56,57 +55,33 @@ const Card = ({
       if (isCashCard && cardRef.current) {
         const cardRect = cardRef.current.getBoundingClientRect();
 
-        // Calculate amount for animation
-        const amount = Number(
-          cardData.amount.replace(/[KMB]/g, (match) => {
-            switch (match) {
-              case "K":
-                return "000";
-              case "M":
-                return "000000";
-              case "B":
-                return "000000000";
-              default:
-                return "";
-            }
-          })
-        );
+        // Calculate amount for animation using utility function
+        const amount = parseCardAmount(cardData.amount);
 
         // Start icon animation with amount using card position
         startIconAnimation(id, cardRect, new DOMRect(0, 0, 100, 100), amount);
       }
 
-      // Handle different card types
-      switch (cardData.title) {
-        case "Bomb":
+      // Handle different card types based on amount field
+      switch (cardData.amount) {
+        case "bomb":
           // Bomb triggers game end
           onBombTrigger();
           break;
-        case "Stop":
-          // Stop doesn't change cash
+        case "stop":
+          // Stop triggers game over
+          onGameOver();
           break;
-        case "Zero":
+        case "0":
           // Zero doesn't change cash
           break;
-        case "Multiplier":
+        case "x2":
+          // Multiplier doubles current cash
           setCash((prevCash) => prevCash * 2);
           break;
         default:
           // Regular cash cards add their amount
-          const amount = Number(
-            cardData.amount.replace(/[KMB]/g, (match) => {
-              switch (match) {
-                case "K":
-                  return "000";
-                case "M":
-                  return "000000";
-                case "B":
-                  return "000000000";
-                default:
-                  return "";
-              }
-            })
-          );
+          const amount = parseCardAmount(cardData.amount);
           setCash((prevCash) => prevCash + amount);
           break;
       }
@@ -309,7 +284,8 @@ const Card = ({
               >
                 <cardData.icon width={65} height={65} />
               </div>
-              {cardData.amount && (
+              {(cardData.title.includes("0") ||
+                cardData.title.includes("1M")) && (
                 <motion.span
                   className="text-white/90 font-bold text-xs font-inter mt-1 drop-shadow-lg"
                   initial={{ y: 10, opacity: 0 }}
