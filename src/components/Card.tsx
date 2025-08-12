@@ -2,9 +2,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { randomCardList } from "../configs/random-card";
 import { useCardEffects } from "../hooks/useCardEffects";
-import { useAnimation } from "../contexts/AnimationContext";
 import MultipleAnimatedIcons from "./MultipleAnimatedIcons";
 import { parseCardAmount, isSpecialCard } from "../utils/utils";
+import { useAnimation } from "../contexts/AnimationContext";
 
 interface CardProps {
   id: number;
@@ -31,8 +31,12 @@ const Card = ({
 }: CardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [pendingAnimation, setPendingAnimation] = useState<{
+    id: number;
+    amount: number;
+  } | null>(null);
   const cardRef = useRef<HTMLLIElement>(null);
-  const { startIconAnimation, setReady } = useAnimation();
+  const { startIconAnimation } = useAnimation();
 
   // Get card effects based on type and flip state
   const cardEffects = useCardEffects(cardData.title, isFlipped);
@@ -40,67 +44,82 @@ const Card = ({
   // Need to check if the image is loaded
   useEffect(() => {
     const img = new Image();
-    img.onload = () => {
-      setImageLoaded(true);
-      // Позначаємо що картка готова
-      setReady(true);
-    };
-    img.onerror = () => {
-      setImageError(true);
-      // Навіть при помилці позначаємо як готову
-      setReady(true);
-    };
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => setImageError(true);
     img.src = cardData.bg;
-  }, [cardData.bg, setReady]);
+  }, [cardData.bg]);
 
   // Check if this is a cash card with CashIcon
   const isCashCard = !isSpecialCard(cardData.amount);
 
+  // Run icon animation after flip
+  useEffect(() => {
+    console.log(`[Card ${id}] useEffect triggered:`, {
+      isFlipped,
+      pendingAnimation,
+      pendingAnimationId: pendingAnimation?.id,
+      currentId: id,
+      isCashCard,
+    });
+
+    if (isFlipped && pendingAnimation && pendingAnimation.id === id) {
+      console.log(
+        `[Card ${id}] Starting icon animation for amount:`,
+        pendingAnimation.amount
+      );
+      // Run icon animation immediately after flip
+      startIconAnimation(pendingAnimation.id, pendingAnimation.amount);
+      setPendingAnimation(null);
+    }
+  }, [isFlipped, pendingAnimation, id, startIconAnimation, isCashCard]);
+
   const handleClick = () => {
+    console.log(`[Card ${id}] handleClick called:`, {
+      isFlipped,
+      gameEnded,
+      cardAmount: cardData.amount,
+      isCashCard,
+    });
+
     if (!isFlipped && !gameEnded) {
+      console.log(`[Card ${id}] Flipping card`);
       onFlip(id);
-
-      if (isCashCard && cardRef.current) {
-        // Додаємо невелику затримку для стабільної роботи на деплої
-        setTimeout(() => {
-          const cardRect = cardRef.current?.getBoundingClientRect();
-
-          if (cardRect) {
-            // Calculate amount for animation using utility function
-            const amount = parseCardAmount(cardData.amount);
-
-            // Start icon animation with amount using card position
-            startIconAnimation(
-              id,
-              cardRect,
-              new DOMRect(0, 0, 100, 100),
-              amount
-            );
-          }
-        }, 100);
-      }
 
       // Handle different card types based on amount field
       switch (cardData.amount) {
         case "bomb":
           // Bomb triggers game end
+          console.log(`[Card ${id}] Bomb triggered`);
           onBombTrigger();
           break;
         case "stop":
           // Stop triggers game over
+          console.log(`[Card ${id}] Stop triggered`);
           onGameOver();
           break;
         case "0":
           // Zero doesn't change cash
+          console.log(`[Card ${id}] Zero card`);
           break;
         case "x2":
           // Multiplier doubles current cash
+          console.log(`[Card ${id}] x2 multiplier`);
           setCash((prevCash) => prevCash * 2);
           break;
         default:
           // Regular cash cards add their amount
           const amount = parseCardAmount(cardData.amount);
+          console.log(`[Card ${id}] Cash card with amount:`, amount);
           setCash((prevCash) => prevCash + amount);
+
+          // Save animation for later
+          if (isCashCard) {
+            console.log(`[Card ${id}] Setting pending animation:`, {
+              id,
+              amount,
+            });
+            setPendingAnimation({ id, amount });
+          }
           break;
       }
     }
@@ -237,6 +256,10 @@ const Card = ({
           <motion.div
             key="front"
             className="absolute w-full h-full bg-white/5 backdrop-blur-lg rounded-lg flex items-center justify-center"
+            style={{
+              backfaceVisibility: "hidden",
+              transformStyle: "preserve-3d",
+            }}
             initial={{ rotateY: 0, opacity: 1 }}
             exit={{ rotateY: -90, opacity: 0 }}
             transition={{
@@ -263,6 +286,10 @@ const Card = ({
           <motion.div
             key="back"
             className="absolute w-full h-full rounded-lg flex flex-col items-center justify-center overflow-hidden"
+            style={{
+              backfaceVisibility: "hidden",
+              transformStyle: "preserve-3d",
+            }}
             initial={{ rotateY: 90, opacity: 0 }}
             animate={{ rotateY: 0, opacity: 1 }}
             exit={{ rotateY: 90, opacity: 0 }}
@@ -328,7 +355,7 @@ const Card = ({
       {/* Multiple Animated Icons */}
       <MultipleAnimatedIcons
         cardId={id}
-        isVisible={isFlipped && isCashCard}
+        isVisible={true}
         cardRef={cardRef}
         targetRef={targetRef}
       />

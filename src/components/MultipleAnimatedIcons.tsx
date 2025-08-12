@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useAnimation } from "../contexts/AnimationContext";
-import { useEffect, useState, useRef } from "react";
-import CashIcon from "./icons/CashIcon";
+import { CashIcon } from "./icons";
 
 interface MultipleAnimatedIconsProps {
   cardId: number;
@@ -16,63 +16,97 @@ const MultipleAnimatedIcons = ({
   cardRef,
   targetRef,
 }: MultipleAnimatedIconsProps) => {
-  const { isAnimating, animatedCardId, animationAmount, isReady } =
+  const { isAnimating, animatedCardId, animationAmount, stopIconAnimation } =
     useAnimation();
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
   const [endPosition, setEndPosition] = useState({ x: 0, y: 0 });
   const [iconCount, setIconCount] = useState(0);
-  const [shouldRender, setShouldRender] = useState(false);
-  const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
+    console.log(`[MultipleAnimatedIcons ${cardId}] useEffect triggered:`, {
+      isAnimating,
+      animatedCardId,
+      cardId,
+      hasCardRef: !!cardRef.current,
+      hasTargetRef: !!targetRef.current,
+      animationAmount,
+    });
+
     if (
       isAnimating &&
       animatedCardId === cardId &&
       cardRef.current &&
-      targetRef.current &&
-      isReady
+      targetRef.current
     ) {
-      // Додаємо невелику затримку для стабільної роботи на деплої
-      timeoutRef.current = setTimeout(() => {
-        const cardRect = cardRef.current?.getBoundingClientRect();
-        const targetRect = targetRef.current?.getBoundingClientRect();
+      console.log(`[MultipleAnimatedIcons ${cardId}] Starting animation setup`);
 
-        if (!cardRect || !targetRect) {
-          return;
-        }
+      const cardRect = cardRef.current.getBoundingClientRect();
+      const targetRect = targetRef.current.getBoundingClientRect();
 
-        // Calculate icon position within the card (slightly above center)
-        const startPos = {
-          x: cardRect.left + cardRect.width / 2 - 20,
-          y: cardRect.top + cardRect.height / 2 - 20,
-        };
+      // Calculate icon position within the card (slightly above center)
+      const startPos = {
+        x: cardRect.left + cardRect.width / 2 - 20,
+        y: cardRect.top + cardRect.height / 2 - 20,
+      };
 
-        const endPos = {
-          x: targetRect.left + targetRect.width / 2 - 20,
-          y: targetRect.top + targetRect.height / 2 - 20,
-        };
+      const endPos = {
+        x: targetRect.left + targetRect.width / 2 - 20,
+        y: targetRect.top + targetRect.height / 2 - 20,
+      };
 
-        setStartPosition(startPos);
-        setEndPosition(endPos);
+      console.log(`[MultipleAnimatedIcons ${cardId}] Positions calculated:`, {
+        startPos,
+        endPos,
+        cardRect: {
+          left: cardRect.left,
+          top: cardRect.top,
+          width: cardRect.width,
+          height: cardRect.height,
+        },
+        targetRect: {
+          left: targetRect.left,
+          top: targetRect.top,
+          width: targetRect.width,
+          height: targetRect.height,
+        },
+      });
 
-        // Calculate number of icons based on amount
-        const count = Math.min(
-          Math.max(Math.floor(animationAmount / 100), 5),
-          20
+      setStartPosition(startPos);
+      setEndPosition(endPos);
+
+      // Calculate number of icons based on amount
+      const count = Math.min(
+        Math.max(Math.floor(animationAmount / 100), 5),
+        20
+      );
+
+      console.log(
+        `[MultipleAnimatedIcons ${cardId}] Icon count calculated:`,
+        count
+      );
+
+      setIconCount(count);
+
+      // Автоматично зупиняємо анімацію після завершення
+      const animationDuration = 1.5 + count * 0.08; // Тривалість анімації + затримка останньої іконки
+      console.log(
+        `[MultipleAnimatedIcons ${cardId}] Setting timer for:`,
+        animationDuration,
+        "seconds"
+      );
+
+      const timer = setTimeout(() => {
+        console.log(
+          `[MultipleAnimatedIcons ${cardId}] Timer expired, stopping animation`
         );
+        stopIconAnimation();
+      }, animationDuration * 1000);
 
-        setIconCount(count);
-        setShouldRender(true);
-      }, 100);
-    } else {
-      setShouldRender(false);
+      return () => {
+        console.log(`[MultipleAnimatedIcons ${cardId}] Cleaning up timer`);
+        clearTimeout(timer);
+      };
     }
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
   }, [
     isAnimating,
     animatedCardId,
@@ -80,24 +114,14 @@ const MultipleAnimatedIcons = ({
     cardRef,
     targetRef,
     animationAmount,
-    isReady,
+    stopIconAnimation,
   ]);
-
-  // Reset when animation stops
-  useEffect(() => {
-    if (!isAnimating) {
-      setShouldRender(false);
-      setIconCount(0);
-    }
-  }, [isAnimating]);
 
   if (
     !isVisible ||
     !isAnimating ||
     animatedCardId !== cardId ||
-    iconCount === 0 ||
-    !shouldRender ||
-    !isReady
+    iconCount === 0
   ) {
     return null;
   }
@@ -115,14 +139,14 @@ const MultipleAnimatedIcons = ({
             opacity: 0,
           }}
           animate={{
-            x: endPosition.x + (Math.random() - 0.5) * 20, // Add some randomness
+            x: endPosition.x + (Math.random() - 0.5) * 20,
             y: endPosition.y + (Math.random() - 0.5) * 20,
             scale: [0.8, 1.2, 0.6],
             opacity: [0, 1, 0],
           }}
           transition={{
-            duration: 1.8, // Трохи довше для стабільності
-            delay: index * 0.06, // Швидший stagger для більшої кількості іконок
+            duration: 1.5,
+            delay: index * 0.08,
             ease: "easeInOut",
             times: [0, 0.3, 1],
           }}

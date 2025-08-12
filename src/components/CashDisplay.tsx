@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import CashIcon from "./icons/CashIcon";
 import { formatCash } from "../utils/utils";
-import { useAnimation } from "../contexts/AnimationContext";
 import CounterUp from "./CounterUp";
+import { useAnimation } from "../contexts/AnimationContext";
+import CashIcon from "./icons/CashIcon";
 
 interface CashDisplayProps {
   cash: number;
@@ -10,7 +10,9 @@ interface CashDisplayProps {
 }
 
 const CashDisplay = ({ cash, cashIconRef }: CashDisplayProps) => {
-  const { isAnimating, setReady } = useAnimation();
+  const { isAnimating } = useAnimation();
+
+  console.log(`[CashDisplay] Rendering with isAnimating:`, isAnimating);
 
   return (
     <div className="flex items-center justify-center mb-10">
@@ -18,15 +20,10 @@ const CashDisplay = ({ cash, cashIconRef }: CashDisplayProps) => {
         ref={cashIconRef}
         data-cash-icon
         animate={{
-          scale: [1, 1.5, 1],
+          scale: isAnimating ? [1, 1.5, 1] : 1,
         }}
         transition={{
           duration: 0.5,
-          delay: 1.5,
-        }}
-        onAnimationComplete={() => {
-          // Позначаємо що cash icon готовий після анімації
-          setReady(true);
         }}
       >
         <CashIcon />

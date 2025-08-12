@@ -8,17 +8,10 @@ import React, {
 
 interface AnimationContextType {
   isAnimating: boolean;
-  startIconAnimation: (
-    cardId: number,
-    cardRect: DOMRect,
-    targetRect: DOMRect,
-    amount: number
-  ) => void;
-  stopIconAnimation: () => void;
   animatedCardId: number | null;
   animationAmount: number;
-  isReady: boolean;
-  setReady: (ready: boolean) => void;
+  startIconAnimation: (cardId: number, amount: number) => void;
+  stopIconAnimation: () => void;
 }
 
 const AnimationContext = createContext<AnimationContextType | undefined>(
@@ -43,63 +36,39 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({
   const [isAnimating, setIsAnimating] = useState(false);
   const [animatedCardId, setAnimatedCardId] = useState<number | null>(null);
   const [animationAmount, setAnimationAmount] = useState(0);
-  const [isReady, setIsReady] = useState(false);
 
-  const setReady = useCallback((ready: boolean) => {
-    setIsReady(ready);
+  const startIconAnimation = useCallback((cardId: number, amount: number) => {
+    console.log(`[AnimationContext] startIconAnimation called:`, {
+      cardId,
+      amount,
+    });
+    // Run animation immediately
+    setIsAnimating(true);
+    setAnimatedCardId(cardId);
+    setAnimationAmount(amount);
+    console.log(`[AnimationContext] Animation state updated:`, {
+      isAnimating: true,
+      animatedCardId: cardId,
+      animationAmount: amount,
+    });
   }, []);
 
-  const startIconAnimation = useCallback(
-    (
-      cardId: number,
-      _cardRect: DOMRect,
-      _targetRect: DOMRect,
-      amount: number
-    ) => {
-      // Перевіряємо чи готові всі елементи
-      if (!isReady) {
-        // Якщо не готові, чекаємо трохи і спробуємо знову
-        setTimeout(() => {
-          if (isReady) {
-            startIconAnimation(cardId, _cardRect, _targetRect, amount);
-          }
-        }, 100);
-        return;
-      }
-
-      // Додаємо невелику затримку для стабільної роботи на деплої
-      setTimeout(() => {
-        setIsAnimating(true);
-        setAnimatedCardId(cardId);
-        setAnimationAmount(amount);
-
-        // Stop animation after 2.5 seconds (довше для стабільності)
-        setTimeout(() => {
-          setIsAnimating(false);
-          setAnimatedCardId(null);
-          setAnimationAmount(0);
-        }, 2500);
-      }, 50);
-    },
-    [isReady]
-  );
-
   const stopIconAnimation = useCallback(() => {
+    console.log(`[AnimationContext] stopIconAnimation called`);
     setIsAnimating(false);
     setAnimatedCardId(null);
     setAnimationAmount(0);
+    console.log(`[AnimationContext] Animation stopped`);
   }, []);
 
   return (
     <AnimationContext.Provider
       value={{
         isAnimating,
-        startIconAnimation,
-        stopIconAnimation,
         animatedCardId,
         animationAmount,
-        isReady,
-        setReady,
+        startIconAnimation,
+        stopIconAnimation,
       }}
     >
       {children}
