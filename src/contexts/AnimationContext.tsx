@@ -1,4 +1,9 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  type ReactNode,
+} from "react";
 
 interface AnimationContextType {
   isAnimating: boolean;
@@ -38,8 +43,8 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({
 
   const startIconAnimation = (
     cardId: number,
-    cardRect: DOMRect,
-    targetRect: DOMRect,
+    _cardRect: DOMRect,
+    _targetRect: DOMRect,
     amount: number
   ) => {
     setIsAnimating(true);

@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
-import { randomCardList } from "../configs/random-card";
 import { formatCash } from "../utils/utils";
 import Button from "./Button";
 import { CashIcon, StopIcon } from "./icons";
@@ -8,16 +7,10 @@ import { CashIcon, StopIcon } from "./icons";
 interface GameOverModalProps {
   isOpen: boolean;
   onClose: () => void;
-  flippedCards: Array<{ id: number; cardData: (typeof randomCardList)[0] }>;
   totalCash: number;
 }
 
-const GameOverModal = ({
-  isOpen,
-  onClose,
-  flippedCards,
-  totalCash,
-}: GameOverModalProps) => {
+const GameOverModal = ({ isOpen, onClose, totalCash }: GameOverModalProps) => {
   return (
     <AnimatePresence>
       {isOpen && (

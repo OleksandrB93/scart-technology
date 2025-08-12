@@ -9,7 +9,6 @@ interface CardListProps {
   onBombTrigger: () => void;
   onGameOver: () => void;
   gameEnded: boolean;
-  onRestartGame?: () => void;
   targetRef: React.RefObject<HTMLElement | null>;
   onFlippedCardsChange?: (
     flippedCards: Array<{ id: number; cardData: any }>
@@ -21,7 +20,6 @@ const CardList = ({
   onBombTrigger,
   onGameOver,
   gameEnded,
-  onRestartGame,
   targetRef,
   onFlippedCardsChange,
 }: CardListProps) => {

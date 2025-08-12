@@ -70,7 +70,6 @@ function App() {
           onBombTrigger={handleBombTrigger}
           onGameOver={handleGameOver}
           gameEnded={gameEnded}
-          onRestartGame={handleRestartGame}
           targetRef={cashIconRef}
           onFlippedCardsChange={setFlippedCards}
         />
@@ -92,7 +91,6 @@ function App() {
         <GameOverModal
           isOpen={isGameOverModalOpen}
           onClose={handleCloseGameOverModal}
-          flippedCards={flippedCards}
           totalCash={cash}
         />
         <BombModal
