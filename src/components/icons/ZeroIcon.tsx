@@ -1,9 +1,9 @@
-const ZeroIcon = () => {
+const ZeroIcon = ({ width, height }: { width?: number; height?: number }) => {
   return (
     <svg
-    className="-mb-0.5"
-      width="37"
-      height="37"
+      width={width || "37"}
+      height={height || "37"}
+      className={width && height ? `mt-1` : "mt-0"}
       viewBox="0 0 37 37"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
