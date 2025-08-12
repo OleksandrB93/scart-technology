@@ -81,12 +81,6 @@ function App() {
           disabled={flippedCards.length === 0}
         />
         <MainPanel />
-        <BombModal
-          isOpen={isBombModalOpen}
-          onClose={handleCloseBombModal}
-          onRestartGame={handleRestartGame}
-          cash={cash}
-        />
         <ClaimModal
           isOpen={isClaimModalOpen}
           onClose={handleCloseClaimModal}
@@ -97,6 +91,12 @@ function App() {
           isOpen={isGameOverModalOpen}
           onClose={handleCloseGameOverModal}
           flippedCards={flippedCards}
+          totalCash={cash}
+        />
+        <BombModal
+          isOpen={isBombModalOpen}
+          onClose={handleCloseBombModal}
+          onRestartGame={handleRestartGame}
           totalCash={cash}
         />
       </MainWrapper>

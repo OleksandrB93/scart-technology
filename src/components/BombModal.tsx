@@ -1,18 +1,24 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { IoMdClose } from "react-icons/io";
+
+import { BombIcon, CashIcon } from "./icons";
+import { formatCash } from "../utils/utils";
+import Button from "./Button";
+import DefuseIcon from "./icons/DefuseIcon";
 
 interface BombModalProps {
   isOpen: boolean;
   onClose: () => void;
   onRestartGame: () => void;
-  cash: number;
+  totalCash: number;
 }
 
 const BombModal = ({
   isOpen,
   onClose,
   onRestartGame,
-  cash,
+  totalCash,
 }: BombModalProps) => {
   const [showExplosion, setShowExplosion] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -71,7 +77,7 @@ const BombModal = ({
         >
           {/* Overlay */}
           <motion.div
-            className="absolute inset-0 bg-black/80"
+            className="absolute inset-0 -z-10 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -251,52 +257,69 @@ const BombModal = ({
           <AnimatePresence>
             {showModal && (
               <motion.div
-                className="relative bg-gradient-to-br from-red-900 to-red-700 rounded-2xl p-8 max-w-md mx-4 text-center border-2 border-red-400 shadow-2xl"
+                className="absolute inset-0 -z-10 bg-[#181A20]/80 text-centershadow-2xl overflow-y-auto "
                 initial={{ scale: 0.8, opacity: 0, y: 50 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.8, opacity: 0, y: 50 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                {/* Bomb Icon in Modal */}
-                <motion.div
-                  className="text-6xl mb-4"
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 1, repeat: Infinity }}
+                <motion.button
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 w-8 h-8 sm:w-10 sm:h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors z-10"
+                  onClick={onClose}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
                 >
-                  💥
-                </motion.div>
-
-                <h2 className="text-2xl font-bold text-white mb-4">BOMB!</h2>
-
-                <p className="text-white/90 mb-6">
-                  You have hit a bomb! All your resources have burned.
+                  <IoMdClose className="w-4 h-4 sm:w-5 sm:h-5 text-white/80" />
+                </motion.button>
+                <h2
+                  className="text-center text-2xl sm:text-3xl font-bold text-white font-inter mt-[170px]"
+                  style={{
+                    textShadow:
+                      "0 2px 8px rgba(255,255,255,0.7), 0 0px 1px #000",
+                  }}
+                >
+                  Game over!
+                </h2>
+                <p className="text-center text-white/90 text-[14px] leading-3">
+                  You've reached <br /> the end of this run...
                 </p>
-
-                <div className="bg-red-800/50 rounded-lg p-4 mb-6">
-                  <p className="text-white/80 text-sm mb-2">Lost resources:</p>
-                  <p className="text-2xl font-bold text-red-300">
-                    {cash.toLocaleString()}
-                  </p>
+                <motion.div
+                  className="relative h-[200px] flex justify-center items-center text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4 
+              after:bg-contain after:blur-[1px] after:scale-40 after:absolute after:inset-0 after:bg-[url('/imgs/bomb.png')] after:bg-no-repeat after:bg-center  after:opacity-30"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <BombIcon width={72} height={72} className="relative z-10" />
+                </motion.div>
+                <div className="rounded-lg p-4 mb- flex flex-col items-center justify-center">
+                  <CashIcon />
+                  <p className="text-base font-bold">{formatCash(totalCash)}</p>
                 </div>
 
-                <div className="space-y-3">
-                  <motion.button
-                    className="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-                    onClick={handleLoseResources}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    ❌ Lose all
-                  </motion.button>
+                <p className="text-center text-[14px] sm:text-[16px] text-white/80 leading-3 mb-4">
+                  ......or defuse it and save your run!
+                </p>
 
-                  <motion.button
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                <div className="flex justify-center items-center gap-2 px-4">
+                  <Button
+                    background="linear-gradient(to bottom, #FF5858 0%, #993535 100%)"
+                    text="Take a hit"
+                    onClick={handleLoseResources}
+                    icon={<BombIcon width={40} height={40} />}
+                    iconSide="left"
+                  />
+                  <Button
+                    background="linear-gradient(to bottom, #AD69FF 0%, #6723CD 100%)"
+                    text="Defuse for "
                     onClick={handleRestartGame}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    🔄 New game
-                  </motion.button>
+                    icon={<DefuseIcon width={"40"} height={"40"} />}
+                    iconSide="right"
+                    btnValue={49}
+                  />
                 </div>
               </motion.div>
             )}

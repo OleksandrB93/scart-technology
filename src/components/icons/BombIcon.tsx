@@ -1,7 +1,15 @@
-const BombIcon = ({ width, height }: { width?: number; height?: number }) => {
+const BombIcon = ({
+  width,
+  height,
+  className,
+}: {
+  width?: number;
+  height?: number;
+  className?: string;
+}) => {
   return (
     <svg
-      className={width && height ? `-mt-2` : "mt-0"}
+      className={width && height ? `-mt-2` : "mt-0" + className}
       width={width || "33"}
       height={height || "32"}
       viewBox="0 0 33 32"

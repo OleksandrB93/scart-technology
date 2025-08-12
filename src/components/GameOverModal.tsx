@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { IoMdClose } from "react-icons/io";
 import { randomCardList } from "../configs/random-card";
 import { formatCash } from "../utils/utils";
 import Button from "./Button";
-import { StopIcon } from "./icons";
+import { CashIcon, StopIcon } from "./icons";
 
 interface GameOverModalProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ const GameOverModal = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
+          {/* Overlay */}
           <motion.div
             className="absolute inset-0 -z-10 backdrop-blur-md"
             initial={{ opacity: 0 }}
@@ -33,6 +35,7 @@ const GameOverModal = ({
             exit={{ opacity: 0 }}
           />
 
+          {/* Modal Content */}
           <motion.div
             className="absolute inset-0 -z-10 bg-[#181A20]/80 text-centershadow-2xl overflow-y-auto "
             initial={{ scale: 0.8, opacity: 0, y: 50 }}
@@ -49,20 +52,7 @@ const GameOverModal = ({
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.3, delay: 0.1 }}
             >
-              <svg
-                className="w-4 h-4 sm:w-5 sm:h-5 text-white/80"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <IoMdClose className="w-4 h-4 sm:w-5 sm:h-5 text-white/80" />
             </motion.button>
 
             <h2
@@ -78,7 +68,7 @@ const GameOverModal = ({
             </p>
             <motion.div
               className="relative h-[200px] flex justify-center items-center text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4 
-              after:bg-contain  after:scale-40 after:absolute after:inset-0 after:bg-[url('/imgs/stop.png')] after:bg-no-repeat after:bg-center  after:opacity-30"
+              after:bg-contain after:blur-[1px] after:scale-40 after:absolute after:inset-0 after:bg-[url('/imgs/stop.png')] after:bg-no-repeat after:bg-center  after:opacity-30"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -87,9 +77,8 @@ const GameOverModal = ({
             </motion.div>
 
             <div className="rounded-lg p-4 mb- flex flex-col items-center justify-center">
-              <p className="text-2xl sm:text-3xl md:text-4xl font-bold">
-                {formatCash(totalCash)}
-              </p>
+              <CashIcon />
+              <p className="text-base font-bold">{formatCash(totalCash)}</p>
             </div>
 
             {/* Opened Cards Grid
