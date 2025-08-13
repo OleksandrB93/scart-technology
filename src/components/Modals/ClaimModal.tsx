@@ -108,7 +108,8 @@ const ClaimModal = ({
                     transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
                   >
                     <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mb-1 sm:mb-2 flex items-center justify-center">
-                      <card.cardData.icon width={32} height={32} />
+                      {/* <card.cardData.icon width={32} height={32} /> */}
+                      <img src={card.cardData.image} alt={card.cardData.title} className="w-12 h-12 object-contain" />
                     </div>
                     {card.cardData.amount && (
                       <span className="text-green-300 text-xs font-bold">
