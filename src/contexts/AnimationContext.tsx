@@ -38,27 +38,16 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({
   const [animationAmount, setAnimationAmount] = useState(0);
 
   const startIconAnimation = useCallback((cardId: number, amount: number) => {
-    console.log(`[AnimationContext] startIconAnimation called:`, {
-      cardId,
-      amount,
-    });
     // Run animation immediately
     setIsAnimating(true);
     setAnimatedCardId(cardId);
     setAnimationAmount(amount);
-    console.log(`[AnimationContext] Animation state updated:`, {
-      isAnimating: true,
-      animatedCardId: cardId,
-      animationAmount: amount,
-    });
   }, []);
 
   const stopIconAnimation = useCallback(() => {
-    console.log(`[AnimationContext] stopIconAnimation called`);
     setIsAnimating(false);
     setAnimatedCardId(null);
     setAnimationAmount(0);
-    console.log(`[AnimationContext] Animation stopped`);
   }, []);
 
   return (

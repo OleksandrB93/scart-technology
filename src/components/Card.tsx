@@ -54,19 +54,7 @@ const Card = ({
 
   // Run icon animation after flip
   useEffect(() => {
-    console.log(`[Card ${id}] useEffect triggered:`, {
-      isFlipped,
-      pendingAnimation,
-      pendingAnimationId: pendingAnimation?.id,
-      currentId: id,
-      isCashCard,
-    });
-
     if (isFlipped && pendingAnimation && pendingAnimation.id === id) {
-      console.log(
-        `[Card ${id}] Starting icon animation for amount:`,
-        pendingAnimation.amount
-      );
       // Run icon animation immediately after flip
       startIconAnimation(pendingAnimation.id, pendingAnimation.amount);
       setPendingAnimation(null);
@@ -74,50 +62,33 @@ const Card = ({
   }, [isFlipped, pendingAnimation, id, startIconAnimation, isCashCard]);
 
   const handleClick = () => {
-    console.log(`[Card ${id}] handleClick called:`, {
-      isFlipped,
-      gameEnded,
-      cardAmount: cardData.amount,
-      isCashCard,
-    });
-
     if (!isFlipped && !gameEnded) {
-      console.log(`[Card ${id}] Flipping card`);
       onFlip(id);
 
       // Handle different card types based on amount field
       switch (cardData.amount) {
         case "bomb":
           // Bomb triggers game end
-          console.log(`[Card ${id}] Bomb triggered`);
           onBombTrigger();
           break;
         case "stop":
           // Stop triggers game over
-          console.log(`[Card ${id}] Stop triggered`);
           onGameOver();
           break;
         case "0":
           // Zero doesn't change cash
-          console.log(`[Card ${id}] Zero card`);
           break;
         case "x2":
           // Multiplier doubles current cash
-          console.log(`[Card ${id}] x2 multiplier`);
           setCash((prevCash) => prevCash * 2);
           break;
         default:
           // Regular cash cards add their amount
           const amount = parseCardAmount(cardData.amount);
-          console.log(`[Card ${id}] Cash card with amount:`, amount);
           setCash((prevCash) => prevCash + amount);
 
           // Save animation for later
           if (isCashCard) {
-            console.log(`[Card ${id}] Setting pending animation:`, {
-              id,
-              amount,
-            });
             setPendingAnimation({ id, amount });
           }
           break;

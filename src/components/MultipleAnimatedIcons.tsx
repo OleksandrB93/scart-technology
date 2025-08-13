@@ -23,23 +23,12 @@ const MultipleAnimatedIcons = ({
   const [iconCount, setIconCount] = useState(0);
 
   useEffect(() => {
-    console.log(`[MultipleAnimatedIcons ${cardId}] useEffect triggered:`, {
-      isAnimating,
-      animatedCardId,
-      cardId,
-      hasCardRef: !!cardRef.current,
-      hasTargetRef: !!targetRef.current,
-      animationAmount,
-    });
-
     if (
       isAnimating &&
       animatedCardId === cardId &&
       cardRef.current &&
       targetRef.current
     ) {
-      console.log(`[MultipleAnimatedIcons ${cardId}] Starting animation setup`);
-
       const cardRect = cardRef.current.getBoundingClientRect();
       const targetRect = targetRef.current.getBoundingClientRect();
 
@@ -54,23 +43,6 @@ const MultipleAnimatedIcons = ({
         y: targetRect.top + targetRect.height / 2 - 20,
       };
 
-      console.log(`[MultipleAnimatedIcons ${cardId}] Positions calculated:`, {
-        startPos,
-        endPos,
-        cardRect: {
-          left: cardRect.left,
-          top: cardRect.top,
-          width: cardRect.width,
-          height: cardRect.height,
-        },
-        targetRect: {
-          left: targetRect.left,
-          top: targetRect.top,
-          width: targetRect.width,
-          height: targetRect.height,
-        },
-      });
-
       setStartPosition(startPos);
       setEndPosition(endPos);
 
@@ -80,30 +52,16 @@ const MultipleAnimatedIcons = ({
         20
       );
 
-      console.log(
-        `[MultipleAnimatedIcons ${cardId}] Icon count calculated:`,
-        count
-      );
-
       setIconCount(count);
 
       // Автоматично зупиняємо анімацію після завершення
       const animationDuration = 1.5 + count * 0.08; // Тривалість анімації + затримка останньої іконки
-      console.log(
-        `[MultipleAnimatedIcons ${cardId}] Setting timer for:`,
-        animationDuration,
-        "seconds"
-      );
 
       const timer = setTimeout(() => {
-        console.log(
-          `[MultipleAnimatedIcons ${cardId}] Timer expired, stopping animation`
-        );
         stopIconAnimation();
       }, animationDuration * 1000);
 
       return () => {
-        console.log(`[MultipleAnimatedIcons ${cardId}] Cleaning up timer`);
         clearTimeout(timer);
       };
     }

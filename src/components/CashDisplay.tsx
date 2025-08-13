@@ -12,8 +12,6 @@ interface CashDisplayProps {
 const CashDisplay = ({ cash, cashIconRef }: CashDisplayProps) => {
   const { isAnimating } = useAnimation();
 
-  console.log(`[CashDisplay] Rendering with isAnimating:`, isAnimating);
-
   return (
     <div className="flex items-center justify-center mb-10">
       <motion.div
