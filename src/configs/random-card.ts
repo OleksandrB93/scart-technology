@@ -7,6 +7,7 @@ export const randomCardList = [
     amount: "1M",
     bg: "/imgs/green.png",
     icon: icons.CashIcon,
+    image: "/imgs/cash.png",
   },
   {
     id: 1,
@@ -14,6 +15,7 @@ export const randomCardList = [
     amount: "100",
     bg: "/imgs/green.png",
     icon: icons.CashIcon,
+    image: "/imgs/cash.png",
   },
   {
     id: 2,
@@ -21,6 +23,7 @@ export const randomCardList = [
     amount: "1000",
     bg: "/imgs/green.png",
     icon: icons.CashIcon,
+    image: "/imgs/cash.png",
   },
   {
     id: 3,
@@ -28,6 +31,7 @@ export const randomCardList = [
     amount: "500",
     bg: "/imgs/green.png",
     icon: icons.CashIcon,
+    image: "/imgs/cash.png",
   },
   {
     id: 4,
@@ -35,6 +39,7 @@ export const randomCardList = [
     amount: "10K",
     bg: "/imgs/green.png",
     icon: icons.CashIcon,
+    image: "/imgs/cash.png",
   },
   {
     id: 5,
@@ -42,6 +47,7 @@ export const randomCardList = [
     amount: "x2",
     bg: "/imgs/blue.png",
     icon: icons.X2CardIcon,
+    image: "/imgs/x2Icon.png",
   },
   {
     id: 6,
@@ -49,6 +55,7 @@ export const randomCardList = [
     amount: "stop",
     bg: "/imgs/gray.png",
     icon: icons.StopIcon,
+    image: "/imgs/stopIcon.png",
   },
   {
     id: 7,
@@ -56,6 +63,7 @@ export const randomCardList = [
     amount: "bomb",
     bg: "/imgs/red.png",
     icon: icons.BombIcon,
+    image: "/imgs/bombIcon.png",
   },
   {
     id: 8,
@@ -63,5 +71,6 @@ export const randomCardList = [
     amount: "0",
     bg: "/imgs/yellow.png",
     icon: icons.ZeroIcon,
+    image: "/imgs/0Icon.png",
   },
 ];

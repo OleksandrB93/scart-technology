@@ -24,7 +24,8 @@ const CashDisplay = ({ cash, cashIconRef }: CashDisplayProps) => {
           duration: 0.5,
         }}
       >
-        <CashIcon />
+        {/* <CashIcon /> */}
+        <img src="/imgs/cash.png" alt="cash" className="w-10 h-10" />
       </motion.div>
       <div className="ml-2">
         <CounterUp

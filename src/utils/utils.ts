@@ -42,3 +42,23 @@ export const parseCardAmount = (amount: string): number => {
 export const isSpecialCard = (amount: string): boolean => {
   return ["x2", "stop", "bomb", "0"].includes(amount);
 };
+
+
+export const getBackgroundColor = (cardData: any, imageError: boolean) => {
+  if (imageError) {
+    // Fallback colors based on the card name
+    switch (cardData.title) {
+      case "Bomb":
+        return "bg-red-500";
+      case "Stop":
+        return "bg-gray-500";
+      case "Zero":
+        return "bg-yellow-500";
+      case "Multiplier":
+        return "bg-blue-500";
+      default:
+        return "bg-green-500";
+    }
+  }
+  return "";
+};

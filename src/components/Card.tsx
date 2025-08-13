@@ -3,7 +3,11 @@ import { useState, useEffect, useRef } from "react";
 import { randomCardList } from "../configs/random-card";
 import { useCardEffects } from "../hooks/useCardEffects";
 import MultipleAnimatedIcons from "./MultipleAnimatedIcons";
-import { parseCardAmount, isSpecialCard } from "../utils/utils";
+import {
+  parseCardAmount,
+  isSpecialCard,
+  getBackgroundColor,
+} from "../utils/utils";
 import { useAnimation } from "../contexts/AnimationContext";
 
 interface CardProps {
@@ -98,26 +102,6 @@ const Card = ({
 
   // Create sparkles for effect
   const sparkles = Array.from({ length: 8 }, (_, i) => i);
-
-  // Determine the background color based on the card type
-  const getBackgroundColor = () => {
-    if (imageError) {
-      // Fallback colors based on the card name
-      switch (cardData.title) {
-        case "Bomb":
-          return "bg-red-500";
-        case "Stop":
-          return "bg-gray-500";
-        case "Zero":
-          return "bg-yellow-500";
-        case "Multiplier":
-          return "bg-blue-500";
-        default:
-          return "bg-green-500";
-      }
-    }
-    return "";
-  };
 
   return (
     <motion.li
@@ -271,7 +255,10 @@ const Card = ({
           >
             {/* Background image with zoom effect */}
             <motion.div
-              className={`absolute inset-0 w-full h-full ${getBackgroundColor()}`}
+              className={`absolute inset-0 w-full h-full ${getBackgroundColor(
+                cardData,
+                imageError
+              )}`}
               style={{
                 backgroundImage:
                   imageLoaded && !imageError ? `url(${cardData.bg})` : "none",
@@ -298,7 +285,8 @@ const Card = ({
                   cardData.bg.includes("green") ? "scale-[1.25]" : ""
                 }`}
               >
-                <cardData.icon width={65} height={65} />
+                {/* <cardData.icon width={65} height={65} /> */}
+                <img src={cardData.image} alt={cardData.title} className="w-15 h-15 object-contain" />
               </div>
               {(cardData.title.includes("0") ||
                 cardData.title.includes("1M")) && (
