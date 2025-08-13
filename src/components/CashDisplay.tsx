@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { formatCash } from "../utils/utils";
 import CounterUp from "./CounterUp";
 import { useAnimation } from "../contexts/AnimationContext";
-import CashIcon from "./icons/CashIcon";
 
 interface CashDisplayProps {
   cash: number;
