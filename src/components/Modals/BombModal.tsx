@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 
-import { BombIcon, CashIcon } from "../icons";
+import { BombIcon } from "../icons";
 import { formatCash } from "../../utils/utils";
 import Button from "../Button";
 import DefuseIcon from "../icons/DefuseIcon";
@@ -294,11 +294,19 @@ const BombModal = ({
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
                   {/* <BombIcon width={72} height={72} className="relative z-10" /> */}
-                  <img src="/imgs/bombIcon.png" alt="bomb" className="w-15 h-15 object-contain" />
+                  <img
+                    src="/imgs/bombIcon.png"
+                    alt="bomb"
+                    className="w-15 h-15 object-contain"
+                  />
                 </motion.div>
                 <div className="rounded-lg p-4 mb- flex flex-col items-center justify-center">
                   {/* <CashIcon /> */}
-                  <img src="/imgs/cash.png" alt="cash" className="w-15 h-15 object-contain" />
+                  <img
+                    src="/imgs/cash.png"
+                    alt="cash"
+                    className="w-15 h-15 object-contain"
+                  />
                   <p className="text-base font-bold">{formatCash(totalCash)}</p>
                 </div>
 

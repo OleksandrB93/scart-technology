@@ -2,7 +2,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
 import { formatCash } from "../../utils/utils";
 import Button from "../Button";
-import { CashIcon, StopIcon } from "../icons";
 
 interface GameOverModalProps {
   isOpen: boolean;
