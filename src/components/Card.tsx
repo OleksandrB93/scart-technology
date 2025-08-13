@@ -286,7 +286,7 @@ const Card = ({
                 }`}
               >
                 {/* <cardData.icon width={65} height={65} /> */}
-                <img src={cardData.image} alt={cardData.title} className="w-15 h-15 object-contain" />
+                <img src={cardData.image} alt={cardData.title} className="w-12 h-12 object-contain" />
               </div>
               {(cardData.title.includes("0") ||
                 cardData.title.includes("1M")) && (

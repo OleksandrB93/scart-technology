@@ -2,10 +2,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 
-import { BombIcon, CashIcon } from "./icons";
-import { formatCash } from "../utils/utils";
-import Button from "./Button";
-import DefuseIcon from "./icons/DefuseIcon";
+import { BombIcon, CashIcon } from "../icons";
+import { formatCash } from "../../utils/utils";
+import Button from "../Button";
+import DefuseIcon from "../icons/DefuseIcon";
 
 interface BombModalProps {
   isOpen: boolean;
@@ -293,15 +293,17 @@ const BombModal = ({
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  <BombIcon width={72} height={72} className="relative z-10" />
+                  {/* <BombIcon width={72} height={72} className="relative z-10" /> */}
+                  <img src="/imgs/bombIcon.png" alt="bomb" className="w-15 h-15 object-contain" />
                 </motion.div>
                 <div className="rounded-lg p-4 mb- flex flex-col items-center justify-center">
-                  <CashIcon />
+                  {/* <CashIcon /> */}
+                  <img src="/imgs/cash.png" alt="cash" className="w-15 h-15 object-contain" />
                   <p className="text-base font-bold">{formatCash(totalCash)}</p>
                 </div>
 
                 <p className="text-center text-[14px] sm:text-[16px] text-white/80 leading-3 mb-4">
-                  ......or defuse it and save your run!
+                  ...or defuse it and save your run!
                 </p>
 
                 <div className="flex justify-center items-center gap-2 px-4">

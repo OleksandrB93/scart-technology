@@ -1,8 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
-import { formatCash } from "../utils/utils";
-import Button from "./Button";
-import { CashIcon, StopIcon } from "./icons";
+import { formatCash } from "../../utils/utils";
+import Button from "../Button";
+import { CashIcon, StopIcon } from "../icons";
 
 interface GameOverModalProps {
   isOpen: boolean;
@@ -66,11 +66,21 @@ const GameOverModal = ({ isOpen, onClose, totalCash }: GameOverModalProps) => {
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <StopIcon width={72} height={72} className="relative z-10" />
+              {/* <StopIcon width={72} height={72} className="relative z-10" /> */}
+              <img
+                src="/imgs/stopIcon.png"
+                alt="stop"
+                className="w-15 h-15 object-contain"
+              />
             </motion.div>
 
             <div className="rounded-lg p-4 mb- flex flex-col items-center justify-center">
-              <CashIcon />
+              {/* <CashIcon /> */}
+              <img
+                src="/imgs/cash.png"
+                alt="cash"
+                className="w-15 h-15 object-contain"
+              />
               <p className="text-base font-bold">{formatCash(totalCash)}</p>
             </div>
 

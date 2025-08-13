@@ -8,9 +8,9 @@ import CardList from "./components/CardList";
 import InfoIconsList from "./components/InfoIconsList";
 import Button from "./components/Button";
 import MainPanel from "./components/MainPanel";
-import BombModal from "./components/BombModal";
-import ClaimModal from "./components/ClaimModal";
-import GameOverModal from "./components/GameOverModal";
+import BombModal from "./components/Modals/BombModal";
+import ClaimModal from "./components/Modals/ClaimModal";
+import GameOverModal from "./components/Modals/GameOverModal";
 import { AnimationProvider } from "./contexts/AnimationContext";
 
 function App() {

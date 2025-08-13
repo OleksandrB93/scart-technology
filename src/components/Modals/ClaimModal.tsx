@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { randomCardList } from "../configs/random-card";
-import { formatCash } from "../utils/utils";
+import { randomCardList } from "../../configs/random-card";
+import { formatCash } from "../../utils/utils";
 
 interface ClaimModalProps {
   isOpen: boolean;
